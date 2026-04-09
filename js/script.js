@@ -479,7 +479,6 @@
     function getFilteredData() {
       
   const category = document.getElementById("categoryFilter")?.value || "all";
-  const month = document.getElementById("monthFilter")?.value || "all";
   const start = window.startDate;
   const end = window.endDate;
 
@@ -492,7 +491,6 @@
     }
     // FILTER BULAN
     const itemMonth = date.getMonth() + 1;
-    if (month !== "all" && itemMonth != month) return false;
 
     // FILTER TANGGAL
     if (start && start > date) return false;
