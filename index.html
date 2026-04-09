@@ -51,6 +51,27 @@
 
       <div class="card">
       <p>Total Master: <span id="totalMaster"></span></p>
+      <div class="card summary-grid">
+  <div class="summary-card">
+    <h3>Total IN</h3>
+    <p id="totalIn">0</p>
+  </div>
+
+  <div class="summary-card">
+    <h3>Total OUT</h3>
+    <p id="totalOut">0</p>
+  </div>
+
+  <div class="summary-card">
+    <h3>Top Item</h3>
+    <p id="topItem">-</p>
+  </div>
+
+  <div class="summary-card">
+    <h3>Low Stock</h3>
+    <p id="lowStock">0</p>
+  </div>
+</div>
       <p>Total Transaction: <span id="totalTrans"></span></p>
 
       </div>
@@ -61,6 +82,7 @@
       <div class="chart-header">
 
     <!-- FILTER CATEGORY -->
+     <label>Category</label>
     <select id="categoryFilter" onchange="renderAll()">
       <option value="all">All</option>
       <option value="Pantry">Pantry</option>
@@ -68,10 +90,15 @@
       <option value="Amenities">Amenities</option>
     </select>
     <!-- FILTER TANGGAL -->
+    <label>Date Range</label>
     <input type="text" id="dateRange" placeholder="Select Date Range">
-
+    <button onclick="clearFilter()" class="btn-export">Reset Filter</button>
   </div>
-      <canvas id="chart"></canvas>
+    <h3>Top 10 Stock</h3>
+    <canvas id="chart"></canvas>
+
+    <h3>IN vs OUT</h3>
+    <canvas id="chart2"></canvas>
     </div>
       
     </div>

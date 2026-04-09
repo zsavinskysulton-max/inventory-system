@@ -476,6 +476,7 @@
     }
     /* CHART */
     let chart;
+    let chartInOut; 
     function getFilteredData() {
       
   const category = document.getElementById("categoryFilter")?.value || "all";
@@ -522,24 +523,25 @@
 
   const labels = [];
   const data = [];
-
-  Object.values(summary).forEach(item => {
-    
-    if (item.qty <= 0) return;
-
+  const sorted = Object.values(summary)
+  .filter(item => item.qty > 0)
+  .sort((a,b)=> b.qty - a.qty)
+  .slice(0,10); 
+  sorted.forEach(item => {
     labels.push(item.name);
     data.push(item.qty);
   });
     
-    if(labels.length === 0){
-      labels.push("No Data");
-      data.push(0);
-    }
+  if(labels.length === 0){
+  document.getElementById("chart").style.display = "none";
+  return;
+  } else {
+    document.getElementById("chart").style.display = "block";
+  }
   const ctx = document.getElementById("chart");
-
   if(chart) chart.destroy();
 
-  chart = new Chart(ctx,{
+chart = new Chart(ctx,{
     type:'bar',
     data:{
       labels:labels,
@@ -632,6 +634,8 @@
     renderTrans();
     renderStockTable();
     renderChart();
+    renderSummary();
+    renderInOutChart();
     }
 function showPage(page, el){
   document.getElementById("dashboardPage").style.display="none";
@@ -675,4 +679,86 @@ flatpickr("#dateRange", {
 });
   showPage('dashboard');
   await loadDataFromAPI();
+}
+function renderSummary(){
+  const filtered = getFilteredData();
+
+  let totalIn = 0;
+  let totalOut = 0;
+  const stockMap = {};
+
+  filtered.forEach(t => {
+    if(t.type === "IN") totalIn += Number(t.qty);
+    else totalOut += Number(t.qty);
+
+    if(!stockMap[t.code]){
+      stockMap[t.code] = { name:t.name, qty:0 };
+    }
+
+    if(t.type === "IN") stockMap[t.code].qty += Number(t.qty);
+    else stockMap[t.code].qty -= Number(t.qty);
+  });
+
+  // 🔥 TOP ITEM
+  let topItem = "-";
+  let max = 0;
+
+  Object.values(stockMap).forEach(i=>{
+    if(i.qty > max){
+      max = i.qty;
+      topItem = i.name;
+    }
+  });
+
+  // 🔥 LOW STOCK
+  let low = 0;
+  masterData.forEach(m=>{
+    const qty = stockMap[m.code]?.qty || 0;
+    if(qty <= Number(m.min)) low++;
+  });
+
+  document.getElementById("totalIn").innerText = totalIn;
+  document.getElementById("totalOut").innerText = totalOut;
+  document.getElementById("topItem").innerText = topItem;
+  document.getElementById("lowStock").innerText = low;
+}
+function renderInOutChart(){
+  const filtered = getFilteredData();
+
+  let totalIn = 0;
+  let totalOut = 0;
+
+  filtered.forEach(t=>{
+    if(t.type === "IN") totalIn += Number(t.qty);
+    else totalOut += Number(t.qty);
+  });
+
+  const ctx = document.getElementById("chart2");
+
+  if(chartInOut) chartInOut.destroy();
+
+    chartInOut = new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:["IN","OUT"],
+      datasets:[{
+        data:[totalIn,totalOut],
+        backgroundColor:["#34d399","#f87171"]
+      }]
+    }
+  });
+}
+function clearFilter(){
+  // reset date
+  window.startDate = null;
+  window.endDate = null;
+
+  // kosongkan input
+  document.getElementById("dateRange").value = "";
+
+  // reset category
+  document.getElementById("categoryFilter").value = "all";
+
+  // render ulang
+  renderAll();
 }
