@@ -297,7 +297,7 @@
     name:item[1],
     type,
     qty,
-    date:new Date().toLocaleString(),
+    date:new Date().toISOString(),
     edit:false
     });
 
@@ -476,20 +476,69 @@
     }
     /* CHART */
     let chart;
+    function getFilteredData() {
+      
+  const category = document.getElementById("categoryFilter")?.value || "all";
+  const month = document.getElementById("monthFilter")?.value || "all";
+  const start = document.getElementById("startDate")?.value;
+  const end = document.getElementById("endDate")?.value;
+
+  return transactionData.filter(item => {
+    const date = new Date(item.date);
+    //FILTER CATEGORY
+    if (category !== "all") {
+      const master = masterData.find(m => m.code === item.code);
+      if (!master || master.category !== category) return false;
+    }
+    // FILTER BULAN
+    const itemMonth = date.getMonth() + 1;
+    if (month !== "all" && itemMonth != month) return false;
+
+    // FILTER TANGGAL
+    if (start && new Date(start) > date) return false;
+    if (end && new Date(end) < date) return false;
+    
+
+    return true;
+  });
+}
     function renderChart(){
-  const filter = document.getElementById("categoryFilter")?.value || "all";
-  const stock = getStock();
+  const category = document.getElementById("categoryFilter")?.value || "all";
+  const filtered = getFilteredData();
+
+  const summary = {};
+
+  filtered.forEach(item => {
+    if (!summary[item.code]) {
+      summary[item.code] = {
+        name: item.name,
+        category: masterData.find(m => m.code === item.code)?.category || "",
+        qty: 0
+      };
+    }
+
+    if (item.type === "IN") {
+      summary[item.code].qty += Number(item.qty);
+    } else {
+      summary[item.code].qty -= Number(item.qty);
+    }
+  });
+
   const labels = [];
   const data = [];
 
-  Object.keys(stock).forEach(code=>{
-    if(filter !== "all" && stock[code].category !== filter) return;
-    if(stock[code].qty <= 0) return;
+  Object.values(summary).forEach(item => {
+    if (category !== "all" && item.category !== category) return;
+    if (item.qty <= 0) return;
 
-    labels.push(stock[code].name);
-    data.push(stock[code].qty);
+    labels.push(item.name);
+    data.push(item.qty);
   });
-
+    
+    if(labels.length === 0){
+      labels.push("No Data");
+      data.push(0);
+    }
   const ctx = document.getElementById("chart");
 
   if(chart) chart.destroy();
@@ -511,26 +560,16 @@
     options:{
       responsive:true,
       maintainAspectRatio:false,
-
-      layout:{
-        padding:20
-      },
-
+      layout:{ padding:20 },
       plugins:{
         legend:{
           position:'top',
-          labels:{
-            color:"#cbd5f5"
-          }
+          labels:{ color:"#cbd5f5" }
         }
       },
-
       scales:{
         x:{
-          ticks:{
-            color:"#94a3b8",
-            padding:10
-          },
+          ticks:{ color:"#94a3b8" },
           grid:{ display:false }
         },
         y:{
@@ -616,6 +655,7 @@ function showPage(page, el){
 
   lucide.createIcons();
  window.onload = async function(){
+  document.getElementById("monthFilter").value = new Date().getMonth() + 1;
   showPage('dashboard');
   await loadDataFromAPI();
 }
