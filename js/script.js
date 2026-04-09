@@ -476,7 +476,6 @@
     }
     /* CHART */
     let chart;
-    let chartInOut; 
     function getFilteredData() {
       
   const category = document.getElementById("categoryFilter")?.value || "all";
@@ -635,7 +634,6 @@ chart = new Chart(ctx,{
     renderStockTable();
     renderChart();
     renderSummary();
-    renderInOutChart();
     }
 function showPage(page, el){
   document.getElementById("dashboardPage").style.display="none";
@@ -721,32 +719,6 @@ function renderSummary(){
   document.getElementById("totalOut").innerText = totalOut;
   document.getElementById("topItem").innerText = topItem;
   document.getElementById("lowStock").innerText = low;
-}
-function renderInOutChart(){
-  const filtered = getFilteredData();
-
-  let totalIn = 0;
-  let totalOut = 0;
-
-  filtered.forEach(t=>{
-    if(t.type === "IN") totalIn += Number(t.qty);
-    else totalOut += Number(t.qty);
-  });
-
-  const ctx = document.getElementById("chart2");
-
-  if(chartInOut) chartInOut.destroy();
-
-    chartInOut = new Chart(ctx,{
-    type:'doughnut',
-    data:{
-      labels:["IN","OUT"],
-      datasets:[{
-        data:[totalIn,totalOut],
-        backgroundColor:["#34d399","#f87171"]
-      }]
-    }
-  });
 }
 function clearFilter(){
   // reset date
