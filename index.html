@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+    <!DOCTYPE html>
     <html>
     <head>
     <meta charset="UTF-8">
@@ -184,7 +184,7 @@
   }
   .chart-grid{
     display:grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap:20px;
     margin-top:20px;
     margin-bottom:30px; /* ✅ TAMBAHKAN INI */
@@ -197,10 +197,6 @@
   height:260px;
   overflow:hidden; /* 🔥 INI KUNCI */
 }
-  #pieChart{
-  max-height: 220px;
-}
-
   /* canvas isi penuh */
   .chart-card canvas{
     width:100% !important;
@@ -320,24 +316,7 @@
 
     <canvas id="chart"></canvas>
   </div>
-
-    <div class="chart-card">
-      <canvas id="trendChart"></canvas>
-    </div>
-
-    <div class="chart-card">
-      <div class="chart-header">
-  <select id="pieFilter" onchange="renderPieChart()">
-    <option value="all">All</option>
-    <option value="Pantry">Pantry</option>
-    <option value="Kitchen">Kitchen</option>
-    <option value="Amenities">Amenities</option>
-  </select>
-</div>
-
-<canvas id="pieChart"></canvas>
-    </div>
-
+    
   </div>
     <div class="card">
     <div class="export-bar">
@@ -528,14 +507,6 @@
     a.href = url;
     a.download = "stock_inventory.csv";
     a.click();
-    }
-    /* NAV */
-    function showPage(page){
-    document.getElementById("dashboardPage").style.display="none";
-    document.getElementById("masterPage").style.display="none";
-    document.getElementById("transactionPage").style.display="none";
-    document.getElementById(page+"Page").style.display="block";
-    renderAll();
     }
 
     /* MASTER */
@@ -973,94 +944,7 @@
   });
 }
     
-    let pieChart;
-
-    function renderPieChart(){
-  const stock = getStock();
-  const filter = document.getElementById("pieFilter")?.value || "all";
-
-  let categoryMap = {};
-
-  Object.keys(stock).forEach(code=>{
-    let cat = stock[code].category;
-
-    if(filter !== "all" && cat !== filter) return;
-
-    if(!categoryMap[cat]) categoryMap[cat] = 0;
-    categoryMap[cat] += stock[code].qty;
-  });
-
-  const labels = Object.keys(categoryMap);
-  const data = Object.values(categoryMap);
-
-  const ctx = document.getElementById("pieChart");
-
-  if(pieChart) pieChart.destroy();
-
-  pieChart = new Chart(ctx,{
-    type:'pie',
-    data:{
-      labels:labels,
-      datasets:[{
-        data:data,
-        backgroundColor:[
-          "#60a5fa",
-          "#f87171",
-          "#34d399"
-        ]
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      layout:{
-        padding:10
-      }
-    }
-  });
-}
-    let trendChart;
-
-    function renderTrendChart(){
-    let dateMap = {};
-
-    transactionData.forEach(t=>{
-      if(!t.date) return;
-
-      let d = new Date(t.date);
-
-      let date = d.toLocaleDateString("id-ID"); 
-
-      if(!dateMap[date]) dateMap[date] = 0;
-
-      if(t.type === "OUT"){
-        dateMap[date] += Number(t.qty);
-      }
-    });
-
-    const labels = Object.keys(dateMap);
-    const data = Object.values(dateMap);
-
-    const ctx = document.getElementById("trendChart");
-
-    if(trendChart) trendChart.destroy();
-
-    trendChart = new Chart(ctx,{
-    type:'line',
-    data:{
-      labels:labels,
-      datasets:[{
-        label:'Pemakaian',
-        data:data
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false
-    }
-  });
-    }
-    /* SELECT */
+        /* SELECT */
     function updateSelect(){
   const select = document.getElementById("itemSelect");
   select.innerHTML = "";
@@ -1116,8 +1000,6 @@
     renderTrans();
     renderStockTable();
     renderChart();
-    renderPieChart();
-    renderTrendChart();
     }
 function showPage(page, el){
   document.getElementById("dashboardPage").style.display="none";
