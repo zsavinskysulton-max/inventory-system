@@ -1,0 +1,1146 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8">
+    <title>Inventory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+    body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    }
+
+    .logo {
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #e5e7eb; /* abu terang */
+    line-height: 1.3;
+  }
+
+  .logo span {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #cbd5f5; /* soft purple */
+    margin-top: 2px;
+  }
+
+  .logo small {
+    display: block;
+    font-size: 11px;
+    color: #94a3b8; /* abu muda */
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+    /* SIDEBAR */
+    .sidebar{
+    width:220px;
+    background:#1e293b;
+    padding:20px;
+
+    height:100vh;        /* bikin full tinggi layar */
+    position:fixed;      /* biar nempel */
+    left:0;
+    top:0;
+    }
+
+    .sidebar h2{margin-bottom:20px;}
+
+    .sidebar button{
+    width:100%;
+    margin-bottom:10px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#4f46e5;
+    color:white;
+    cursor:pointer;
+    }
+
+    /* CONTENT */
+    .content{
+      flex:1;
+      padding:30px;
+      margin-left:240px; /* SESUAI LEBAR SIDEBAR */
+    }
+
+
+    /* CARD */
+    .card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    }
+
+    /* FORM */
+    .form-row{
+    display:flex;
+    gap:10px;
+    }
+
+    /* INPUT */
+    input, select{
+    background:#020617;
+    border:1px solid #334155;
+    color:white;
+    padding:8px;
+    border-radius:8px;
+    width:100%;
+    }
+
+    /* TABLE */
+    table{
+    width:100%;
+    border-collapse:collapse;
+    }
+
+    th{
+    background:#334155;
+    padding:10px;
+    }
+
+    td{
+    padding:10px;
+    border-bottom:1px solid #334155;
+    }
+
+    /* BUTTON */
+    .btn{
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    }
+
+    .edit{background:#4f46e5;}
+    .delete{background:#ef4444;}
+    .save{background:#16a34a;}
+    .cancel{background:#475569;}
+
+    /* EDIT INPUT */
+    .edit-input{
+    background:#020617 !important;
+    border:1px solid #475569 !important;
+    color:white !important;
+    }
+    .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+  }
+
+  .topbar .user{
+    text-align:right;
+    font-size:14px;
+    color:#cbd5f5;
+  }
+  .sidebar{
+    background: linear-gradient(180deg, #1e293b, #0f172a);
+  }
+  .sidebar button:hover{
+    transform: translateY(-2px);
+    background:#6366f1;
+  }
+  .sidebar button{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:flex-start;
+  }
+
+  .sidebar i{
+    width:18px;
+    height:18px;
+  }
+  .sidebar button:hover i{
+    transform:scale(1.1);
+  }
+  .sidebar button.active{
+    background:#6366f1;
+    box-shadow:0 0 10px rgba(99,102,241,0.5);
+  }
+  .sidebar button i{
+    transition:0.2s;
+  }
+
+  .sidebar button:hover i{
+    transform:scale(1.2) rotate(5deg);
+  }
+  .topbar{
+    background: rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.05);
+    border-radius:12px;
+    padding:15px 20px;
+  }
+  .chart-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:20px;
+    margin-top:20px;
+    margin-bottom:30px; /* ✅ TAMBAHKAN INI */
+  }
+
+  .chart-card{
+  background:#1e293b;
+  border-radius:15px;
+  padding:15px;
+  height:260px;
+  overflow:hidden; /* 🔥 INI KUNCI */
+}
+  #pieChart{
+  max-height: 220px;
+}
+
+  /* canvas isi penuh */
+  .chart-card canvas{
+    width:100% !important;
+    height:100% !important;
+  }
+
+  /* responsive */
+  @media (max-width: 900px){
+    .chart-grid{
+      grid-template-columns: 1fr;
+    }
+  }
+  .export-bar{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px; /* jarak ke tabel */
+  }
+
+  .btn-export{
+    background: linear-gradient(135deg,#6366f1,#4f46e5);
+    border:none;
+    color:white;
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    cursor:pointer;
+    transition:0.2s;
+  }
+
+  .btn-export:hover{
+    opacity:0.85;
+    transform:translateY(-1px);
+  }
+  #categoryFilter{
+    background:#020617;
+    color:white;
+    border:1px solid #334155;
+    padding:6px 10px;
+    border-radius:8px;
+  }
+  .chart-header{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:10px;
+  }
+
+  #categoryFilter{
+    width:150px; /* 🔥 penting biar ga kepanjangan */
+    background:#020617;
+    color:white;
+    border:1px solid #334155;
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:13px;
+  }
+  canvas{
+  padding-bottom:10px;
+}
+    </style>
+    </head>
+
+    <body>
+
+    <div class="sidebar">
+    <h2 class="logo">
+    INVENTORY <br>
+    <span>Kitchen & Laundry</span>
+    <small>Waron Hospital</small>
+  </h2>
+    <button onclick="showPage('dashboard', this)">
+    <i data-lucide="layout-dashboard"></i> Dashboard
+  </button>
+
+  <button onclick="showPage('master', this)">
+    <i data-lucide="database"></i> Master
+  </button>
+
+  <button onclick="showPage('transaction', this)">
+    <i data-lucide="repeat"></i> Transaction
+  </button>
+    </div>
+
+    <div class="content">
+
+  <!-- HEADER -->
+  <div class="topbar">
+    <div>
+      <div id="currentDate"></div>
+      <div id="currentTime" style="font-size:22px;font-weight:bold;"></div>
+    </div>
+
+  
+  </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardPage">
+    <h1>Dashboard</h1>
+
+    <div class="card">
+    <p>Total Master: <span id="totalMaster"></span></p>
+    <p>Total Transaction: <span id="totalTrans"></span></p>
+
+    </div>
+
+    <div class="chart-grid">
+
+    <div class="chart-card">
+    <!-- 🔽 DROPDOWN TARUH DI SINI -->
+    <div class="chart-header">
+    <select id="categoryFilter" onchange="renderChart()">
+      <option value="all">All</option>
+      <option value="Pantry">Pantry</option>
+      <option value="Kitchen">Kitchen</option>
+      <option value="Amenities">Amenities</option>
+    </select>
+  </div>
+
+    <canvas id="chart"></canvas>
+  </div>
+
+    <div class="chart-card">
+      <canvas id="trendChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+  <select id="pieFilter" onchange="renderPieChart()">
+    <option value="all">All</option>
+    <option value="Pantry">Pantry</option>
+    <option value="Kitchen">Kitchen</option>
+    <option value="Amenities">Amenities</option>
+  </select>
+</div>
+
+<canvas id="pieChart"></canvas>
+    </div>
+
+  </div>
+    <div class="card">
+    <div class="export-bar">
+      <button class="btn-export" onclick="exportToExcel()">Export Excel</button>
+      <button class="btn-export" onclick="exportToCSV()">Export Google Sheet</button>
+    </div>
+    <table>
+    <thead>
+    <tr>
+    <th>Code</th>
+    <th>Name</th>
+    <th>Stock</th>
+    </tr>
+    </thead>
+    <tbody id="stockTable"></tbody>
+    </table>
+    </div>
+    </div>
+
+    <!-- MASTER -->
+    <div id="masterPage" style="display:none">
+    <h1>Master</h1>
+
+    <div class="card form-row">
+    <input id="name" placeholder="Nama Barang">
+    <select id="category">
+    <option>Pantry</option>
+    <option>Kitchen</option>
+    <option>Amenities</option>
+    </select>
+    <input id="min" type="number" placeholder="Min Stock">
+    <button class="btn edit" onclick="addMaster()">+ Tambah</button>
+    </div>
+
+    <div class="card">
+    <table>
+    <thead>
+    <tr>
+    <th>Code</th>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Min</th>
+    <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="masterTable"></tbody>
+    </table>
+    </div>
+    </div>
+
+    <!-- TRANSACTION -->
+    <div id="transactionPage" style="display:none">
+    <h1>Transaction</h1>
+
+    <div class="card form-row">
+    <select id="itemSelect"></select>
+    <select id="type">
+    <option>IN</option>
+    <option>OUT</option>
+    </select>
+    <input id="qty" type="number" placeholder="Qty">
+    <button class="btn edit" onclick="addTransaction()">+ Tambah</button>
+    </div>
+
+    <div class="card">
+    <table>
+    <thead>
+    <tr>
+    <th>Code</th>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Qty</th>
+    <th>Date</th>
+    <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="transTable"></tbody>
+    </table>
+    </div>
+    </div>
+
+    </div>
+
+    <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzgK6cqOvfQBVNS_z88IdJSwP4grzWKAyodAWrBpVeCs9C5vX71nBX0p4oTgX80GnY/exec";
+    let masterData = JSON.parse(localStorage.getItem("masterData")) || [];
+    let transactionData = JSON.parse(localStorage.getItem("transactionData")) || [];
+
+    async function loadDataFromAPI() {
+      try {
+        const masterRes = await fetch(API_URL + "?type=getMaster");
+        const masterJson = await masterRes.json();
+
+        const transRes = await fetch(API_URL + "?type=getTransaction");
+        const transJson = await transRes.json();
+
+        // skip header
+        masterData = masterJson.slice(1).map(r => ({
+          code: r[0],
+          name: r[1],
+          category: r[2],
+          min: r[3],
+          edit:false
+        }));
+
+        transactionData = transJson.slice(1).map(r => ({
+          code: r[0],
+          name: r[1],
+          type: r[2],
+          qty: r[3],
+          date: r[4],
+          edit:false
+        }));
+
+        renderAll();
+
+      } catch (err) {
+        console.error("ERROR:", err);
+      }
+    }
+    function saveData(){
+    localStorage.setItem("masterData", JSON.stringify(masterData));
+    localStorage.setItem("transactionData", JSON.stringify(transactionData));
+    }
+    function prepareStockData(){
+    const stock = getStock();
+
+    let data = [];
+
+    Object.keys(stock).forEach(code=>{
+    data.push({
+    Code: code,
+    Name: stock[code].name,
+    Category: stock[code].category,
+    Stock: stock[code].qty
+    });
+    });
+
+    return data;
+    }
+    function exportToExcel(){
+    const data = prepareStockData();
+
+    let html = `
+    <table border="1">
+    <tr>
+    <th>Code</th>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Stock</th>
+    </tr>
+    `;
+
+    data.forEach(d=>{
+    html += `
+    <tr>
+    <td>${d.Code}</td>
+    <td>${d.Name}</td>
+    <td>${d.Category}</td>
+    <td>${d.Stock}</td>
+    </tr>
+    `;
+    });
+
+    html += `</table>`;
+
+    let blob = new Blob([html], {type: "application/vnd.ms-excel"});
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "stock_inventory.xls";
+    a.click();
+    }
+    function exportToCSV(){
+    const data = prepareStockData();
+
+    let csv = "Code,Name,Category,Stock\n";
+
+    data.forEach(d=>{
+    csv += `${d.Code},${d.Name},${d.Category},${d.Stock}\n`;
+    });
+
+    let blob = new Blob([csv], {type: "text/csv"});
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "stock_inventory.csv";
+    a.click();
+    }
+    /* NAV */
+    function showPage(page){
+    document.getElementById("dashboardPage").style.display="none";
+    document.getElementById("masterPage").style.display="none";
+    document.getElementById("transactionPage").style.display="none";
+    document.getElementById(page+"Page").style.display="block";
+    renderAll();
+    }
+
+    /* MASTER */
+    function addMaster(){
+    const name = document.getElementById("name").value;
+    const category = document.getElementById("category").value;
+    const min = document.getElementById("min").value;
+
+    if(!name || !min) return alert("Isi dulu");
+
+    let prefix = "";
+
+  if(category === "Pantry") prefix = "PAN";
+  if(category === "Kitchen") prefix = "KIT";
+  if(category === "Amenities") prefix = "AME";
+
+  // ambil nomor terakhir berdasarkan prefix
+  const lastCodes = masterData
+    .filter(m => m.code.startsWith(prefix))
+    .map(m => parseInt(m.code.replace(prefix,"")) || 0);
+
+  const newNumber = lastCodes.length > 0 ? Math.max(...lastCodes) + 1 : 1;
+
+  const code = prefix + newNumber.toString().padStart(3,"0");
+
+    /* SIMPAN KE GOOGLE SHEETS */
+    fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+    type: "master",
+    code,
+    name,
+    category,
+    min
+    })
+    });
+
+    /* SIMPAN KE LOCAL (BIAR UI LANGSUNG UPDATE) */
+    masterData.push({code,name,category,min,edit:false});
+    saveData();
+    renderMaster();
+    }
+    function renderMaster(){
+  const table = document.getElementById("masterTable");
+  table.innerHTML="";
+
+  // 🔥 SORT CATEGORY + CODE
+  const sortedData = [...masterData].sort((a,b)=>{
+    if(a.category === b.category){
+      return a.code.localeCompare(b.code);
+    }
+    return a.category.localeCompare(b.category);
+  });
+
+  let currentCategory = "";
+
+  sortedData.forEach((m)=>{
+    const i = masterData.findIndex(x => x.code === m.code);
+
+    // 🔥 HEADER CATEGORY
+    if(m.category !== currentCategory){
+      currentCategory = m.category;
+
+      table.innerHTML += `
+      <tr style="background:#0f172a;">
+        <td colspan="5"><b>${currentCategory}</b></td>
+      </tr>
+      `;
+    }
+
+    if(m.edit){
+      table.innerHTML += `
+      <tr>
+      <td>${m.code}</td>
+      <td><input class="edit-input" value="${m.name}" id="n${i}"></td>
+      <td>
+      <select class="edit-input" id="c${i}">
+      <option ${m.category=="Pantry"?"selected":""}>Pantry</option>
+      <option ${m.category=="Kitchen"?"selected":""}>Kitchen</option>
+      <option ${m.category=="Amenities"?"selected":""}>Amenities</option>
+      </select>
+      </td>
+      <td><input class="edit-input" value="${m.min}" id="m${i}"></td>
+      <td>
+      <button class="btn save" onclick="saveMaster(${i})">Save</button>
+      <button class="btn cancel" onclick="cancelMaster(${i})">Cancel</button>
+      </td>
+      </tr>`;
+    }else{
+      table.innerHTML += `
+      <tr>
+      <td>${m.code}</td>
+      <td>${m.name}</td>
+      <td>${m.category}</td>
+      <td>${m.min}</td>
+      <td>
+      <button class="btn edit" onclick="editMaster(${i})">Edit</button>
+      <button class="btn delete" onclick="deleteMaster(${i})">Delete</button>
+      </td>
+      </tr>`;
+    }
+  });
+
+  document.getElementById("totalMaster").innerText = masterData.length;
+  updateSelect();
+}
+    function editMaster(i){masterData[i].edit=true; renderMaster();}
+    function cancelMaster(i){masterData[i].edit=false; renderMaster();}
+
+    function saveMaster(i){
+    const item = masterData[i];
+
+    const name = document.getElementById("n"+i).value;
+    const category = document.getElementById("c"+i).value;
+    const min = document.getElementById("m"+i).value;
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        type: "editMaster",
+        code: item.code,
+        name,
+        category,
+        min
+      })
+    })
+    .then(res => res.text())
+    .then(res => {
+      // update local setelah backend sukses
+      masterData[i].name = name;
+      masterData[i].category = category;
+      masterData[i].min = min;
+      masterData[i].edit = false;
+
+      saveData();
+      renderMaster();
+      loadDataFromAPI();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Gagal update!");
+    });
+  }
+    function deleteMaster(i){
+    const item = masterData[i];
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        type: "deleteMaster",
+        code: item.code
+      })
+    })
+    .then(res => res.text())
+    .then(res => {
+      console.log("Deleted:", res);
+
+      masterData.splice(i,1);
+      saveData();
+      renderMaster();
+      loadDataFromAPI();
+    })
+    .catch(err => {
+      console.error("Delete gagal:", err);
+      alert("Gagal hapus data!");
+    });
+  }
+    /* TRANSACTION */
+    function addTransaction(){
+    const item = document.getElementById("itemSelect").value.split("|");
+    const type = document.getElementById("type").value;
+    const qty = document.getElementById("qty").value;
+
+    if(!qty) return alert("Isi qty");
+
+    /* KIRIM KE GOOGLE SHEETS */
+    fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+    type: "transaction",
+    code:item[0],
+    name:item[1],
+    typeTrx:type,
+    qty
+    })
+    });
+
+    /* SIMPAN KE LOCAL */
+    transactionData.push({
+    code:item[0],
+    name:item[1],
+    type,
+    qty,
+    date:new Date().toLocaleString(),
+    edit:false
+    });
+
+    saveData();
+    renderTrans();
+    }
+  function formatDate(date){
+    return new Date(date).toLocaleString("id-ID");
+  }
+    function renderTrans(){
+    const table = document.getElementById("transTable");
+    table.innerHTML="";
+
+    transactionData.forEach((t,i)=>{
+    if(t.edit){
+    table.innerHTML += `
+    <tr>
+    <td>${t.code}</td>
+    <td>${t.name}</td>
+    <td>
+    <select class="edit-input" id="t${i}">
+    <option ${t.type=="IN"?"selected":""}>IN</option>
+    <option ${t.type=="OUT"?"selected":""}>OUT</option>
+    </select>
+    </td>
+    <td><input class="edit-input" value="${t.qty}" id="q${i}"></td>
+    <td>${formatDate(t.date)}</td>
+    <td>
+    <button class="btn save" onclick="saveTrans(${i})">Save</button>
+    <button class="btn cancel" onclick="cancelTrans(${i})">Cancel</button>
+    </td>
+    </tr>`;
+    }else{
+    table.innerHTML += `
+    <tr>
+    <td>${t.code}</td>
+    <td>${t.name}</td>
+    <td>${t.type}</td>
+    <td>${t.qty}</td>
+    <td>${formatDate(t.date)}</td>
+    <td>
+    <button class="btn edit" onclick="editTrans(${i})">Edit</button>
+    <button class="btn delete" onclick="deleteTrans(${i})">Delete</button>
+    </td>
+    </tr>`;
+    }
+    });
+
+    document.getElementById("totalTrans").innerText = transactionData.length;
+    }
+
+    function editTrans(i){transactionData[i].edit=true; renderTrans();}
+    function cancelTrans(i){transactionData[i].edit=false; renderTrans();}
+
+    function saveTrans(i){
+    const type = document.getElementById("t"+i).value;
+    const qty = document.getElementById("q"+i).value;
+
+    const rowIndex = i + 2; // penting!
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        type: "editTransaction",
+        row: rowIndex,
+        typeTrx: type,
+        qty: qty
+      })
+    })
+    .then(res => res.text())
+    .then(res => {
+      transactionData[i].type = type;
+      transactionData[i].qty = qty;
+      transactionData[i].edit = false;
+
+      saveData();
+      renderTrans();
+      loadDataFromAPI();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Gagal update!");
+    });
+  }
+
+    
+
+    function deleteTrans(i){
+    const rowIndex = i + 2; // +2 karena header + index 0
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        type: "deleteTransaction",
+        row: rowIndex
+      })
+    })
+    .then(res => res.text())
+    .then(res => {
+      transactionData.splice(i,1);
+      saveData();
+      renderTrans();
+      loadDataFromAPI();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Gagal delete!");
+    });
+  }
+
+    /* STOCK */
+    /* STOCK */
+    function getStock(){
+    let stock={};
+
+    masterData.forEach(m=>{
+    stock[m.code]={
+    name:m.name,
+    category:m.category, // 🔥 TAMBAH INI
+    qty:0
+    };
+    });
+
+    transactionData.forEach(t=>{
+    if(!stock[t.code]) return;
+    if(t.type=="IN") stock[t.code].qty+=Number(t.qty);
+    else stock[t.code].qty-=Number(t.qty);
+    });
+
+    return stock;
+    }
+
+    function renderStockTable(){
+    const table=document.getElementById("stockTable");
+    table.innerHTML="";
+
+    const stock=getStock();
+
+    /* 🔥 UBAH JADI ARRAY + SORT */
+    let stockArray = Object.keys(stock).map(code => ({
+    code,
+    name: stock[code].name,
+    category: stock[code].category,
+    qty: stock[code].qty
+    }));
+
+    /* 🔥 SORT BY CATEGORY */
+    stockArray.sort((a,b)=> a.category.localeCompare(b.category));
+
+    let currentCategory = "";
+
+    /* 🔥 LOOP */
+    stockArray.forEach(item=>{
+
+    /* 🔥 GROUP HEADER */
+    if(item.category !== currentCategory){
+    currentCategory = item.category;
+
+    table.innerHTML += `
+    <tr style="background:#0f172a;">
+    <td colspan="3"><b>${currentCategory}</b></td>
+    </tr>
+    `;
+    }
+
+    /* DATA */
+    table.innerHTML+=`
+    <tr>
+    <td>${item.code}</td>
+    <td>${item.name}</td>
+    <td>${item.qty}</td>
+    </tr>
+    `;
+    });
+
+    }
+    /* CHART */
+    let chart;
+    function renderChart(){
+  const filter = document.getElementById("categoryFilter")?.value || "all";
+  const stock = getStock();
+  const labels = [];
+  const data = [];
+
+  Object.keys(stock).forEach(code=>{
+    if(filter !== "all" && stock[code].category !== filter) return;
+    if(stock[code].qty <= 0) return;
+
+    labels.push(stock[code].name);
+    data.push(stock[code].qty);
+  });
+
+  const ctx = document.getElementById("chart");
+
+  if(chart) chart.destroy();
+
+  chart = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:labels,
+      datasets:[{
+        label:'Stock',
+        data:data,
+        backgroundColor:[
+          "#60a5fa",
+          "#34d399",
+          "#fbbf24"
+        ]
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+
+      layout:{
+        padding:20
+      },
+
+      plugins:{
+        legend:{
+          position:'top',
+          labels:{
+            color:"#cbd5f5"
+          }
+        }
+      },
+
+      scales:{
+        x:{
+          ticks:{
+            color:"#94a3b8",
+            padding:10
+          },
+          grid:{ display:false }
+        },
+        y:{
+          ticks:{ color:"#94a3b8" }
+        }
+      }
+    }
+  });
+}
+    
+    let pieChart;
+
+    function renderPieChart(){
+  const stock = getStock();
+  const filter = document.getElementById("pieFilter")?.value || "all";
+
+  let categoryMap = {};
+
+  Object.keys(stock).forEach(code=>{
+    let cat = stock[code].category;
+
+    if(filter !== "all" && cat !== filter) return;
+
+    if(!categoryMap[cat]) categoryMap[cat] = 0;
+    categoryMap[cat] += stock[code].qty;
+  });
+
+  const labels = Object.keys(categoryMap);
+  const data = Object.values(categoryMap);
+
+  const ctx = document.getElementById("pieChart");
+
+  if(pieChart) pieChart.destroy();
+
+  pieChart = new Chart(ctx,{
+    type:'pie',
+    data:{
+      labels:labels,
+      datasets:[{
+        data:data,
+        backgroundColor:[
+          "#60a5fa",
+          "#f87171",
+          "#34d399"
+        ]
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      layout:{
+        padding:10
+      }
+    }
+  });
+}
+    let trendChart;
+
+    function renderTrendChart(){
+    let dateMap = {};
+
+    transactionData.forEach(t=>{
+      if(!t.date) return;
+
+      let d = new Date(t.date);
+
+      let date = d.toLocaleDateString("id-ID"); 
+
+      if(!dateMap[date]) dateMap[date] = 0;
+
+      if(t.type === "OUT"){
+        dateMap[date] += Number(t.qty);
+      }
+    });
+
+    const labels = Object.keys(dateMap);
+    const data = Object.values(dateMap);
+
+    const ctx = document.getElementById("trendChart");
+
+    if(trendChart) trendChart.destroy();
+
+    trendChart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:labels,
+      datasets:[{
+        label:'Pemakaian',
+        data:data
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false
+    }
+  });
+    }
+    /* SELECT */
+    function updateSelect(){
+  const select = document.getElementById("itemSelect");
+  select.innerHTML = "";
+
+  const order = {
+    "Pantry": 1,
+    "Kitchen": 2,
+    "Amenities": 3
+  };
+
+  // 🔥 SORT SAMA SEPERTI MASTER
+  const sortedData = [...masterData].sort((a,b)=>{
+    if(a.category === b.category){
+      return a.code.localeCompare(b.code);
+    }
+    return order[a.category] - order[b.category];
+  });
+
+  let currentCategory = "";
+
+  sortedData.forEach(m=>{
+    if(m.category !== currentCategory){
+      currentCategory = m.category;
+
+      const optGroup = document.createElement("optgroup");
+      optGroup.label = currentCategory;
+      select.appendChild(optGroup);
+    }
+
+    const option = document.createElement("option");
+    option.value = `${m.code}|${m.name}`;
+    option.textContent = `${m.code} | ${m.name}`;
+
+    select.lastChild.appendChild(option);
+  });
+}
+    function updateClock(){
+    const now = new Date();
+
+    document.getElementById("currentDate").innerText =
+      now.toLocaleDateString("id-ID", { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+    document.getElementById("currentTime").innerText =
+      now.toLocaleTimeString("id-ID");
+  }
+
+  setInterval(updateClock,1000);
+  updateClock();
+
+    /* RENDER ALL */
+    function renderAll(){
+    renderMaster();
+    renderTrans();
+    renderStockTable();
+    renderChart();
+    renderPieChart();
+    renderTrendChart();
+    }
+function showPage(page, el){
+  document.getElementById("dashboardPage").style.display="none";
+  document.getElementById("masterPage").style.display="none";
+  document.getElementById("transactionPage").style.display="none";
+
+  document.getElementById(page+"Page").style.display="block";
+
+  document.querySelectorAll(".sidebar button").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  if(el) el.classList.add("active"); // 🔥 aman tanpa error
+
+  renderAll();
+}   
+
+  lucide.createIcons();
+ window.onload = async function(){
+  showPage('dashboard');
+  await loadDataFromAPI();
+}
+
+    </script>
+    </body>
+    </html>
