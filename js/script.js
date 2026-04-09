@@ -489,8 +489,6 @@
       const master = masterData.find(m => m.code === item.code);
       if (!master || master.category !== category) return false;
     }
-    // FILTER BULAN
-    const itemMonth = date.getMonth() + 1;
 
     // FILTER TANGGAL
     if (start && start > date) return false;
@@ -653,20 +651,28 @@ function showPage(page, el){
 
   lucide.createIcons();
  window.onload = async function(){
-  document.getElementById("monthFilter").value = new Date().getMonth() + 1;
-  window.startDate = new Date();
-  window.endDate = new Date();
+  // 👉 pastikan default = ALL DATA
+  window.startDate = null;
+  window.endDate = null;
+
+  // 👉 kosongkan input date
+  document.getElementById("dateRange").value = "";
+
   showPage('dashboard');
   await loadDataFromAPI();
 }
 flatpickr("#dateRange", {
   mode: "range",
   dateFormat: "Y-m-d",
-  defaultDate: [new Date(), new Date()],
   onChange: function(selectedDates) {
     if (selectedDates.length === 2) {
       window.startDate = selectedDates[0];
       window.endDate = selectedDates[1];
+      renderAll();
+    } else {
+      // 👉 kalau dikosongkan = ALL DATA
+      window.startDate = null;
+      window.endDate = null;
       renderAll();
     }
   }
