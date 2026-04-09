@@ -527,7 +527,11 @@
   .sort((a,b)=> b.qty - a.qty)
   .slice(0,10); 
   sorted.forEach(item => {
-    labels.push(item.name);
+    labels.push(
+  item.name.length > 12 
+    ? item.name.substring(0,12) + "..." 
+    : item.name
+);
     data.push(item.qty);
   });
     
@@ -541,42 +545,72 @@
   if(chart) chart.destroy();
 
 chart = new Chart(ctx,{
-    type:'bar',
-    data:{
-      labels:labels,
-      datasets:[{
-        label:'Stock',
-        data:data,
-        backgroundColor:[
-          "#60a5fa",
-          "#34d399",
-          "#fbbf24"
-        ]
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      layout:{ padding:20 },
-      plugins:{
-        legend:{
-          position:'top',
-          labels:{ color:"#cbd5f5" }
+  type:'bar',
+  data:{
+    labels:labels,
+    datasets:[{
+      label:'Stock',
+      data:data,
+      backgroundColor:[
+        "#60a5fa","#34d399","#fbbf24","#f87171","#a78bfa",
+        "#fb923c","#22d3ee","#f472b6","#4ade80","#c084fc"
+      ],
+      hoverBackgroundColor:[
+        "#93c5fd","#6ee7b7","#fde68a","#fca5a5","#c4b5fd",
+        "#fdba74","#67e8f9","#f9a8d4","#86efac","#d8b4fe"
+      ],
+      borderRadius:6,
+      barThickness:40,
+      maxBarThickness:50
+    }]
+  },
+  options:{   // 🔥 SEMUA MASUK SINI
+    responsive:true,
+    maintainAspectRatio:false,
+  animation:{
+  duration:800,
+  easing:'easeOutQuart'
+  },
+    plugins:{
+      tooltip:{
+        callbacks:{
+          label: function(context){
+            return sorted[context.dataIndex].name + ": " + context.raw;
+          }
         }
       },
-      scales:{
-        x:{
-          ticks:{ color:"#94a3b8" },
-          grid:{ display:false }
+      legend:{
+        display:false
+        
+      }
+    },
+
+    layout:{
+      padding:{
+        left:20,
+        right:20,
+        top:10,
+        bottom:10
+      }
+    },
+
+    scales:{
+      x:{
+        ticks:{
+          color:"#94a3b8",
+          maxRotation:0,
+          minRotation:0,
+          autoSkip:true
         },
-        y:{
-          ticks:{ color:"#94a3b8" }
-        }
+        grid:{ display:false }
+      },
+      y:{
+        ticks:{ color:"#94a3b8" }
       }
     }
-  });
+  }
+});
 }
-    
         /* SELECT */
     function updateSelect(){
   const select = document.getElementById("itemSelect");
@@ -734,3 +768,4 @@ function clearFilter(){
   // render ulang
   renderAll();
 }
+    

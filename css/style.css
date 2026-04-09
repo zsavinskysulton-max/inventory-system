@@ -188,15 +188,22 @@
   display:flex;
   flex-direction:column;
   gap:10px;
-}
-.chart-card canvas{
-  width:100% !important;
-  height:350px !important;
-}
-.chart-card{
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
+.chart-card canvas{
+  width:100%;
+  height:100%;
+}
+.chart-container{
+  width:100%;
+  max-width:1200px;
+  height:400px;
+  margin:0 auto;
+}
 
+.chart-card{
+  align-items:center;
+}
   /* responsive */
   @media (max-width: 900px){
     .chart-grid{
