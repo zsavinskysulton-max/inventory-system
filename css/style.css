@@ -180,18 +180,22 @@
     margin-bottom:30px; /* ✅ TAMBAHKAN INI */
   }
 
-  .chart-card{
-  background:#1e293b;
-  border-radius:15px;
-  padding:15px;
-  height:260px;
-  overflow:hidden; /* 🔥 INI KUNCI */
+  .chart-card h3{
+  margin:10px 0;
+  color:#cbd5f5;
 }
-  /* canvas isi penuh */
-  .chart-card canvas{
-    width:100% !important;
-    height:100% !important;
-  }
+.chart-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.chart-card canvas{
+  width:100% !important;
+  height:350px !important;
+}
+.chart-card{
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 
   /* responsive */
   @media (max-width: 900px){
@@ -228,10 +232,12 @@
     border-radius:8px;
   }
   .chart-header{
-    display:flex;
-    justify-content:flex-end;
-    margin-bottom:10px;
-  }
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:15px;
+  flex-wrap:wrap;
+}
 
   #categoryFilter{
     width:150px; /* 🔥 penting biar ga kepanjangan */
