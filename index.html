@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
       <body>
 
@@ -85,8 +87,7 @@
     </select>
 
     <!-- FILTER TANGGAL -->
-    <input type="date" id="startDate" onchange="renderAll()">
-    <input type="date" id="endDate" onchange="renderAll()">
+    <input type="text" id="dateRange" placeholder="Select Date Range">
 
   </div>
       <canvas id="chart"></canvas>

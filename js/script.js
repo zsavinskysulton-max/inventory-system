@@ -480,8 +480,8 @@
       
   const category = document.getElementById("categoryFilter")?.value || "all";
   const month = document.getElementById("monthFilter")?.value || "all";
-  const start = document.getElementById("startDate")?.value;
-  const end = document.getElementById("endDate")?.value;
+  const start = window.startDate;
+  const end = window.endDate;
 
   return transactionData.filter(item => {
     const date = new Date(item.date);
@@ -495,8 +495,8 @@
     if (month !== "all" && itemMonth != month) return false;
 
     // FILTER TANGGAL
-    if (start && new Date(start) > date) return false;
-    if (end && new Date(end) < date) return false;
+    if (start && start > date) return false;
+    if (end && end < date) return false;
     
 
     return true;
@@ -656,6 +656,20 @@ function showPage(page, el){
   lucide.createIcons();
  window.onload = async function(){
   document.getElementById("monthFilter").value = new Date().getMonth() + 1;
+  window.startDate = new Date();
+  window.endDate = new Date();
   showPage('dashboard');
   await loadDataFromAPI();
 }
+flatpickr("#dateRange", {
+  mode: "range",
+  dateFormat: "Y-m-d",
+  defaultDate: [new Date(), new Date()],
+  onChange: function(selectedDates) {
+    if (selectedDates.length === 2) {
+      window.startDate = selectedDates[0];
+      window.endDate = selectedDates[1];
+      renderAll();
+    }
+  }
+});
