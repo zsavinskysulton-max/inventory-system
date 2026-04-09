@@ -524,7 +524,7 @@
   const data = [];
 
   Object.values(summary).forEach(item => {
-    if (category !== "all" && item.category !== category) return;
+    
     if (item.qty <= 0) return;
 
     labels.push(item.name);
@@ -657,10 +657,6 @@ function showPage(page, el){
 
   // 👉 kosongkan input date
   document.getElementById("dateRange").value = "";
-
-  showPage('dashboard');
-  await loadDataFromAPI();
-}
 flatpickr("#dateRange", {
   mode: "range",
   dateFormat: "Y-m-d",
@@ -677,3 +673,6 @@ flatpickr("#dateRange", {
     }
   }
 });
+  showPage('dashboard');
+  await loadDataFromAPI();
+}
