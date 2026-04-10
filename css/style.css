@@ -307,7 +307,7 @@
   margin-bottom:20px;
   box-sizing:border-box; 
   padding:14px 20px;   /* 🔥 TAMBAH ATAS BAWAH */
-  
+  /* background:#0f172a; */
   border:1px solid #1e293b;
   border-radius:10px;
 }
@@ -353,3 +353,45 @@
   .btn-export:hover{
     background:#4f46e5;
   }
+
+  /* NOTIF ADD EDIT DAN DELETE */
+  .toast-top{
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+
+  background: #16a34a;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+
+  opacity: 0;
+  transition: 0.3s;
+  z-index: 9999;
+}
+
+.toast-top.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast-success{ background:#16a34a; }
+.toast-error{ background:#ef4444; }
+.toast-warning{ background:#f59e0b; }
+
+table{
+  position: relative;
+  z-index: 1;
+}
+.sticky-header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  background:#0f172a;
+  padding: 15px 20px;
+
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}

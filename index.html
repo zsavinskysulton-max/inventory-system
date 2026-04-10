@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
+    
       <body>
-
+      <div id="toastTop" class="toast-top"></div>
       <div class="sidebar">
       <h2 class="logo">
       INVENTORY <br>
@@ -38,8 +39,8 @@
     <!-- HEADER -->
     <div class="topbar">
       <div>
-        <div id="currentDate"></div>
-        <div id="currentTime" style="font-size:22px;font-weight:bold;"></div>
+        <div class="currentDate"></div>
+        <div class="currentTime" style="font-size:22px;font-weight:bold;"></div>
       </div>
 
     
@@ -133,66 +134,74 @@
 
       <!-- MASTER -->
       <div id="masterPage" style="display:none">
-      <h1>Master</h1>
 
-      <div class="card form-row">
+  <div class="sticky-header">
+    <h1>Master</h1>
+
+    <div class="card form-row">
       <input id="name" placeholder="Nama Barang">
       <select id="category">
-      <option>Pantry</option>
-      <option>Kitchen</option>
-      <option>Amenities</option>
+        <option>Pantry</option>
+        <option>Kitchen</option>
+        <option>Amenities</option>
       </select>
       <input id="min" type="number" placeholder="Min Stock">
       <button class="btn edit" onclick="addMaster()">+ Tambah</button>
-      </div>
+    </div>
+  </div>
 
-      <div class="card">
-      <table>
+  <div class="card">
+    <table>
       <thead>
-      <tr>
-      <th>Code</th>
-      <th>Name</th>
-      <th>Category</th>
-      <th>Min</th>
-      <th>Action</th>
-      </tr>
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Min</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody id="masterTable"></tbody>
-      </table>
-      </div>
-      </div>
+    </table>
+  </div>
 
-      <!-- TRANSACTION -->
+</div>
+
       <div id="transactionPage" style="display:none">
-      <h1>Transaction</h1>
 
-      <div class="card form-row">
+  <div class="sticky-header">
+
+    <h1>Transaction</h1>
+
+    <div class="card form-row">
       <select id="itemSelect"></select>
       <select id="type">
-      <option>IN</option>
-      <option>OUT</option>
+        <option>IN</option>
+        <option>OUT</option>
       </select>
       <input id="qty" type="number" placeholder="Qty">
       <button class="btn edit" onclick="addTransaction()">+ Tambah</button>
-      </div>
+    </div>
 
-      <div class="card">
-      <table>
+  </div>
+
+  <div class="card">
+    <table>
       <thead>
-      <tr>
-      <th>Code</th>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Qty</th>
-      <th>Date</th>
-      <th>Action</th>
-      </tr>
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Qty</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody id="transTable"></tbody>
-      </table>
-      </div>
-      </div>
+    </table>
+  </div>
 
+</div>
       </div>
   <script src="js/script.js"></script>
       

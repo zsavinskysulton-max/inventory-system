@@ -145,6 +145,7 @@
     masterData.push({code,name,category,min,edit:false});
     saveData();
     renderMaster();
+    showToast("✅ Master berhasil ditambahkan");
     }
     function renderMaster(){
   const table = document.getElementById("masterTable");
@@ -241,6 +242,7 @@
       saveData();
       renderMaster();
       loadDataFromAPI();
+      showToast("✏️ Master berhasil diupdate","warning");
     })
     .catch(err => {
       console.error(err);
@@ -265,6 +267,7 @@
       saveData();
       renderMaster();
       loadDataFromAPI();
+      showToast("🗑️ Master berhasil dihapus","error");
     })
     .catch(err => {
       console.error("Delete gagal:", err);
@@ -303,6 +306,7 @@
 
     saveData();
     renderTrans();
+    showToast("✅ Transaksi berhasil ditambahkan");
     }
   function formatDate(date){
     return new Date(date).toLocaleString("id-ID");
@@ -376,10 +380,12 @@
       saveData();
       renderTrans();
       loadDataFromAPI();
+      showToast("✏️ Transaksi diupdate","warning");
     })
     .catch(err => {
       console.error(err);
       alert("Gagal update!");
+      
     });
   }
 
@@ -401,6 +407,7 @@
       saveData();
       renderTrans();
       loadDataFromAPI();
+      showToast("🗑️ Transaksi dihapus","error");
     })
     .catch(err => {
       console.error(err);
@@ -649,14 +656,25 @@ chart = new Chart(ctx,{
   });
 }
     function updateClock(){
-    const now = new Date();
+  const now = new Date();
 
-    document.getElementById("currentDate").innerText =
-      now.toLocaleDateString("id-ID", { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  const dateString = now.toLocaleDateString("id-ID", {
+    weekday:'long',
+    day:'2-digit',
+    month:'long',
+    year:'numeric'
+  });
 
-    document.getElementById("currentTime").innerText =
-      now.toLocaleTimeString("id-ID");
-  }
+  const timeString = now.toLocaleTimeString("id-ID");
+
+  document.querySelectorAll(".currentDate").forEach(el=>{
+    el.innerText = dateString;
+  });
+
+  document.querySelectorAll(".currentTime").forEach(el=>{
+    el.innerText = timeString;
+  });
+}
 
   setInterval(updateClock,1000);
   updateClock();
@@ -768,4 +786,13 @@ function clearFilter(){
   // render ulang
   renderAll();
 }
-    
+function showToast(message, type="success"){
+  const toast = document.getElementById("toastTop");
+
+  toast.innerText = message;
+  toast.className = "toast-top show toast-" + type;
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  }, 2500);
+}    
